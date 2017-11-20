@@ -31,7 +31,7 @@ uploads <-
 
 from_path <- uploads$path_display
 to_path   <- 
-  uploads$path_lower %>% 
+  uploads$path_display %>% 
   str_replace(
     "/Kamera-Uploads/",
     paste0(
@@ -45,6 +45,7 @@ to_path   <-
 
 # move files one-by-one
 for(i in seq_along(from_path)){
+  cat(i, "/", length(from_path), from_path[i], " -- ", to_path[i], "\n")
   drop_move(from_path = from_path[i], to_path = to_path[i])
 }
 
