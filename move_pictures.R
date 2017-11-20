@@ -26,18 +26,18 @@ uploads <- drop_dir("Kamera-Uploads")
 uploads <- 
   uploads %>% 
   filter(
-    drop_date_as_posixct(uploads$modified) < (Sys.time() - 60*60*24*30*4)
+    drop_date_as_posixct(uploads$client_modified) < (Sys.time() - 60*60*24*30*4)
   )
 
-from_path <- uploads$path
+from_path <- uploads$path_display
 to_path   <- 
-  uploads$path %>% 
+  uploads$path_lower %>% 
   str_replace(
     "/Kamera-Uploads/",
     paste0(
       "/Kamera-Saves/", 
-      drop_date_year(uploads$modified),      
-      drop_date_month(uploads$modified),
+      drop_date_year(uploads$client_modified),      
+      drop_date_month(uploads$client_modified),
       "/"
     )
   )
