@@ -11,7 +11,6 @@ library(dplyr)
 
 #### helper function ===========================================================
 
-source("functions/drop_as_posixct.R")
 
 
 
@@ -20,26 +19,39 @@ source("functions/drop_as_posixct.R")
 # authenticate
 drop_auth()
 
+
 # gather info
 uploads <- drop_dir("Kamera-Uploads")
 
+
+# filter for 'old' folders
 uploads <- 
   uploads %>% 
   filter(
-    drop_date_as_posixct(uploads$modified) < (Sys.time() - 60*60*24*30*4)
+    as_datetime(server_modified) < (Sys.time() - 60*60*24*30*4)
   )
 
-from_path <- uploads$path
-to_path   <- 
-  uploads$path %>% 
+
+# get current path 
+from_path <- uploads$path_display
+
+
+# generate new folder
+new_folder <- 
+  paste0(
+    "/Kamera-Saves/", 
+    year(as_datetime(uploads$server_modified)),      
+    str_pad(month(as_datetime(uploads$server_modified)), width = 2, side = "left", pad = "0"),
+    "/"
+  )
+
+
+# generate new path
+to_path <- 
   str_replace(
-    "/Kamera-Uploads/",
-    paste0(
-      "/Kamera-Saves/", 
-      drop_date_year(uploads$modified),      
-      drop_date_month(uploads$modified),
-      "/"
-    )
+    string      = uploads$path_display,
+    pattern     = "/Kamera-Uploads/",
+    replacement = new_folder
   )
 
 
